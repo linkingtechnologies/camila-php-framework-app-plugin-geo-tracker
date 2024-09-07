@@ -1,0 +1,8 @@
+<?xml version='1.0' standalone='yes'?>
+<menu>
+ <tab>
+  <id>index</id>
+  <title>HELP</title>
+  <url>?dashboard=index</url>
+ </tab>
+</menu>
