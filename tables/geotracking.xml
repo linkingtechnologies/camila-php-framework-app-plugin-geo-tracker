@@ -4,9 +4,77 @@
 		<field name="id" type="C">
 			<KEY/>
 		</field>
+		<field name="_id" type="C">
+		</field>
+		<field name="inserted_at" type="T">
+		</field>
+		<field name="type" type="C">
+		</field>
+		<field name="acc" type="I">
+		</field>
+		<field name="alt" type="I">
+		</field>
+		<field name="batt" type="I">
+		</field>
+		<field name="bs" type="I">
+		</field>
+		<field name="cog" type="I">
+		</field>
 		<field name="lat" type="F">
 		</field>
 		<field name="lon" type="F">
 		</field>
+		<field name="rad" type="I">
+		</field>
+		<field name="t" type="C">
+		</field>
+		<field name="tid" type="C">
+		</field>
+		<field name="topic" type="C">
+		</field>
+		<field name="tst" type="T">
+		</field>
+		<field name="vac" type="I">
+		</field>
+		<field name="vel" type="I">
+		</field>
+		<field name="p" type="F">
+		</field>
+		<field name="poi" type="C">
+		</field>
+		<field name="conn" type="C">
+		</field>
+		<field name="tag" type="C">
+		</field>
+		<field name="topic" type="C">
+		</field>
+		<field name="inregions" type="C">
+		</field>
+		<field name="inrids" type="C">
+		</field>
+		<field name="SSID" type="C">
+		</field>
+		<field name="BSSID" type="C">
+		</field>
+		<field name="created_at" type="T">
+		</field>
+		<field name="m" type="I">
+		</field>
+
+		<index name="tid">
+			<col>tid</col>
+		</index>
+		<index name="type">
+			<col>type</col>
+		</index>
+		<index name="created_at">
+			<col>created_at</col>
+		</index>
+		<index name="tst">
+			<col>tst</col>
+		</index>
+		<index name="inserted_at">
+			<col>inserted_at</col>
+		</index>
 	</table>
 </schema>
