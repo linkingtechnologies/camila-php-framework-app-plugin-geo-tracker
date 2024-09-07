@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <schema version="0.3">
 	<table name="geotracking">
-		<field name="id" type="C">
+		<field name="id" type="C" size="100">
 			<KEY/>
 		</field>
-		<field name="_id" type="C">
+		<field name="aid" type="C" size="100">
 		</field>
 		<field name="inserted_at" type="T">
 		</field>
-		<field name="type" type="C">
+		<field name="type" type="C" size="10">
 		</field>
 		<field name="acc" type="I">
 		</field>
@@ -26,11 +26,11 @@
 		</field>
 		<field name="rad" type="I">
 		</field>
-		<field name="t" type="C">
+		<field name="t" type="C" size="1">
 		</field>
-		<field name="tid" type="C">
+		<field name="tid" type="C" size="100">
 		</field>
-		<field name="topic" type="C">
+		<field name="topic" type="C" size="100">
 		</field>
 		<field name="tst" type="T">
 		</field>
@@ -40,21 +40,19 @@
 		</field>
 		<field name="p" type="F">
 		</field>
-		<field name="poi" type="C">
+		<field name="poi" type="C" size="250">
 		</field>
-		<field name="conn" type="C">
+		<field name="conn" type="C" size="100">
 		</field>
-		<field name="tag" type="C">
+		<field name="tag" type="C" size="100">
 		</field>
-		<field name="topic" type="C">
+		<field name="inregions" type="C" size="250">
 		</field>
-		<field name="inregions" type="C">
+		<field name="inrids" type="C" size="250">
 		</field>
-		<field name="inrids" type="C">
+		<field name="SSID" type="C" size="250">
 		</field>
-		<field name="SSID" type="C">
-		</field>
-		<field name="BSSID" type="C">
+		<field name="BSSID" type="C" size="250">
 		</field>
 		<field name="created_at" type="T">
 		</field>
