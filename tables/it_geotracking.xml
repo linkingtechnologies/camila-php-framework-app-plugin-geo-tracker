@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+	<table name="geotracking">
+		<field name="id" type="C">
+			<KEY/>
+		</field>
+		<field name="lat" type="F">
+		</field>
+		<field name="lon" type="F">
+		</field>
+	</table>
+</schema>
