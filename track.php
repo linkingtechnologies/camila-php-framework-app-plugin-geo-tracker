@@ -40,18 +40,19 @@ if (!empty($json)) {
 		addProperty($d, 'tag', $data);
 		addProperty($d, 'inregions', $data);
 		addProperty($d, 'inrids', $data);
-		
+
 		$table = CAMILA_APPLICATION_PREFIX.'geotracking';
 		$result = $db->AutoExecute($table, $data, 'INSERT');
 
 		if ($result) {
+			http_response_code(200);
 			echo "OK";
 		} else {
-			header("HTTP/1.1 500 Internal Server Error");
+			http_response_code(500);
 			echo "KO: " . $db->ErrorMsg();
 		}
 	} else {
-		header("HTTP/1.1 500 Internal Server Error");
+		http_response_code(500);
 		echo "KO: " . json_last_error_msg();
 	}
 }
