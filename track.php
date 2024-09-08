@@ -13,7 +13,8 @@ if (!empty($json)) {
 		$data = [
 		'id' => $d->tid.$rid.$d->_id.$d->tst,
 		'tst' => date('Y-m-d H:i:s', $d->tst),
-		'inserted_at' => date('Y-m-d H:i:s', time())
+		'inserted_at' => date('Y-m-d H:i:s', time()),
+		'tracker' => $d->topic . '/' . $d->tid
 		];
 		addProperty($d, '_id', $data);
 		addProperty($d, '_type', $data);

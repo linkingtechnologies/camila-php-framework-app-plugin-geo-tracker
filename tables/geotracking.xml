@@ -6,6 +6,8 @@
 		</field>
 		<field name="aid" type="C" size="100">
 		</field>
+		<field name="tracker" type="C" size="250">
+		</field>
 		<field name="inserted_at" type="T">
 		</field>
 		<field name="type" type="C" size="10">
@@ -73,6 +75,9 @@
 		</index>
 		<index name="inserted_at">
 			<col>inserted_at</col>
+		</index>
+		<index name="tracker">
+			<col>tracker</col>
 		</index>
 	</table>
 </schema>
