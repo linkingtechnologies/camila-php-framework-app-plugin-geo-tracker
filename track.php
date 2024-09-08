@@ -49,11 +49,11 @@ if (!empty($json)) {
 			echo "OK";
 		} else {
 			http_response_code(500);
-			echo "KO: " . $db->ErrorMsg();
+			logError($json, $db->ErrorMsg());
 		}
 	} else {
 		http_response_code(500);
-		echo "KO: " . json_last_error_msg();
+		logError($json, json_last_error_msg());
 	}
 }
 
@@ -69,6 +69,12 @@ function addProperty($object, $property, &$data) {
 			$data[$property] = $object->$property;
 		}
     }
+}
+
+function logError($payload, $errorMessage, $logFile = '../../var/log/tracker_errors.txt') {
+    $timestamp = date('Y-m-d H:i:s');
+    $logEntry = "[{$timestamp}] ERROR: {$errorMessage} | Payload: " . json_encode($payload) . PHP_EOL;
+    file_put_contents($logFile, $logEntry, FILE_APPEND);
 }
 
 ?>
