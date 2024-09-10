@@ -9,9 +9,8 @@ if (!empty($json)) {
 	$d = json_decode($json);
 
 	if (json_last_error() === JSON_ERROR_NONE) {
-		$rid = uniqid();
 		$data = [
-		'id' => $d->tid.$rid.$d->_id.$d->tst,
+		'id' => $d->tid.uniqid().$d->_id.$d->tst,
 		'tst' => date('Y-m-d H:i:s', $d->tst),
 		'inserted_at' => date('Y-m-d H:i:s', time()),
 		'tracker' => $d->topic . '/' . $d->tid
