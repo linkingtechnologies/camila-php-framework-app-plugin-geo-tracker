@@ -1,0 +1,53 @@
+<br/>
+
+<style>
+
+#map_canvas {
+	height: 400px;
+}
+</style>
+
+<div class="row">
+	<h3><span class="glyphicon glyphicon-map-marker"></span> MAPPA SERVIZI</h3>
+</div>
+<div class="row">	
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<!--<div class="panel-body">-->
+				<div id="map" style="height: 500px; width: 100%;"></div>
+			<!--</div>-->
+		</div>
+</div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=[onshow.apikey]"></script>
+    <script>
+        function initMap() {
+			var bounds = new google.maps.LatLngBounds();
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 5,
+                center: { lat: 42.0, lng: 12.0 } // Center Italy
+            });
+
+            // Path array to hold coordinates
+			var path = [];
+			[coord;block=begin]
+			var loc = new google.maps.LatLng([coord.latitude], [coord.longitude]);
+			path.push(loc);
+			bounds.extend(loc);
+			[coord;block=end]
+
+            var flightPath = new google.maps.Polyline({
+                path: path,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+			
+			map.fitBounds(bounds);
+			map.panToBounds(bounds);
+
+            flightPath.setMap(map);
+        }
+		initMap();
+    </script>

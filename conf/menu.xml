@@ -2,7 +2,17 @@
 <menu>
  <tab>
   <id>index</id>
-  <title>HELP</title>
+  <title>HOME</title>
   <url>?dashboard=index</url>
+ </tab>
+ <tab>
+  <id>map</id>
+  <title>MAPPA</title>
+  <url>?dashboard=map</url>
+ </tab>
+ <tab>
+  <id>last_tracking</id>
+  <title>ULTIMI TRACCIAMENTI</title>
+  <url>?dashboard=last_tracking</url>
  </tab>
 </menu>

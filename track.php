@@ -1,6 +1,6 @@
 <?php
 require('../../var/config.php');
-require('../../../../lib/adodb5/adodb.inc.php');
+require('../../../../vendor/adodb/adodb-php/adodb.inc.php');
 
 $db = NewADOConnection(CAMILA_DB_DSN);
 
@@ -46,7 +46,7 @@ if (!empty($json)) {
 
 		if ($result) {
 			http_response_code(200);
-			echo "OK";
+			echo json_encode(["status" => "success"]);
 		} else {
 			http_response_code(500);
 			logError($json, $db->ErrorMsg());
