@@ -1,7 +1,11 @@
 <?php
-
 require_once(CAMILA_VENDOR_DIR.'tinybutstrong/tinybutstrong/tbs_class.php');
 require_once(CAMILA_DIR.'tbs/plugins/tbsdb_jladodb.php');
+
+$template = 'gmap';
+if (isset($_GET['mt']) && $_GET['mt']=='osm') {
+	$template = 'omap';
+}
 
 $camilaWT = new CamilaWorkTable();
 $camilaWT->db = $_CAMILA['db'];
@@ -9,7 +13,7 @@ $camilaWT->db = $_CAMILA['db'];
 $conn = $_CAMILA['db'];
 global $conn;
 
-function drawMap() {
+function drawMap($template) {
 	global $_CAMILA;
 	global $camilaWT;
 	global $mapName;
@@ -35,11 +39,15 @@ function drawMap() {
 		$TBS->SetOption('noerr', true);
 		$TBS->SetVarRefItem('apikey', $params['chiave_mappa_google']);
 
-		$TBS->LoadTemplate(CAMILA_APP_PATH.'/plugins/'.basename(dirname(__FILE__)).'/templates/tbs/it/gmap.htm');
+		$TBS->LoadTemplate(CAMILA_APP_PATH.'/plugins/'.basename(dirname(__FILE__)).'/templates/tbs/it/'.$template.'.htm');
 		$TBS->MergeBlock('res','adodb',$camilaWT->parseWorktableSqlStatement($queryList));
 		$TBS->MergeBlock('res2','adodb',$camilaWT->parseWorktableSqlStatement($stmt2));
 		$TBS->MergeBlock('res3','adodb',$camilaWT->parseWorktableSqlStatement($stmt1));
-		$_CAMILA['page']->add_userdefined(new CHAW_tbs($TBS, true));		
+		
+		$_CAMILA['page']->add_userdefined(new CHAW_tbs($TBS, true));
+
+		/*$refrCode = "<script>function refreshPage() {window.location.reload();};setInterval(refreshPage, 5000);</script>";
+		$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, $refrCode));*/
 	}
 	else
 	{
@@ -48,5 +56,5 @@ function drawMap() {
 	}
 }
 
-drawMap();
+drawMap($template);
 ?>

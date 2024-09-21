@@ -1,0 +1,207 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<style>
+	#map_canvas {
+		height: 400px;
+		width: 100%;
+	}
+
+	h5:empty {
+		display: none;
+	}
+</style>
+
+<script type="text/javascript">
+	function getMarkerPath(color, letter) {
+		var icon = 'plugins/geo-tracker/templates/images/it/marker_rosso.png';
+		if (color) {
+			icon = 'plugins/geo-tracker/templates/images/it/marker_' + color + '.png';
+		}
+		if (letter) {
+			icon = 'plugins/geo-tracker/templates/images/en/marker_' + traduciColore(color) + letter.toUpperCase() + '.png';
+		}
+		return icon;
+	}
+
+	function traduciColore(colore) {
+		switch (colore.toLowerCase()) {
+			case 'rosso': return 'red';
+			case 'nero': return 'black';
+			case 'blu': return 'blue';
+			case 'verde': return 'green';
+			case 'grigio': return 'grey';
+			case 'arancione': return 'orange';
+			case 'viola': return 'purple';
+			case 'bianco': return 'white';
+			case 'giallo': return 'yellow';
+			default: return 'red';
+		}
+	}
+	
+	function writeMarkerIcon(color, letter) {
+        document.write('<img src="' + getMarkerPath(color, letter) + '" alt="marker">');
+    }
+</script>
+
+<div class="row">
+    <h3><span class="glyphicon glyphicon-map-marker"></span> MAPPA RISORSE E SERVIZI</h3>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4><span class="glyphicon glyphicon-map-marker"></span> RISORSE</h4>
+                <input id="filter1" type="text" placeholder="Cerca risorse...">
+                <div id="results1">
+                    [res2;block=begin]
+                    <div class="results">
+                        <h4>
+                            <script type="text/javascript">writeMarkerIcon('[res2.colore;strconv=js]','[res2.lettera;strconv=js]');</script>
+                            <a href="javascript:zoomIn('[res2.tracker]');">[res2.risorsa]</a>
+                        </h4>
+                    </div>
+                    [res2;block=end]
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4><span class="glyphicon glyphicon-map-marker"></span> SERVIZI</h4>
+                <input id="filter2" type="text" placeholder="Cerca servizi...">
+                <div id="results2">
+                    [res3;block=begin]
+                    <div class="results">
+                        <h4>
+                            <script type="text/javascript">writeMarkerIcon('[res3.colore;strconv=js]','[res3.lettera;strconv=js]');</script>
+                            <a href="javascript:zoomIn('[res3.tracker]');">[res3.risorsa]</a>
+                        </h4>
+                    </div>
+                    [res3;block=end]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div id="map_canvas"></div>
+        </div>
+
+        <div class="panel panel-default">
+            <input id="searchTextField" type="text" size="50" placeholder="Ricerca indirizzo e premi invio..." autocomplete="on" />
+        </div>
+        <div class="panel panel-default">
+            <input type="hidden" id="city2" name="city2" />
+            <input type="Lat" id="cityLat" name="cityLat" placeholder="Latitudine" />
+            <input type="Long" id="cityLng" name="cityLng" placeholder="Longitudine" />
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var map;
+    var markers = {};
+
+    function initMap() {
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        map = L.map('map_canvas', {
+            center: [41.8719, 12.5674], // Centro sull'Italia
+            zoom: 6,
+            layers: [osmLayer]  // Layer di default
+        });
+
+        var baseMaps = {
+            "OpenStreetMap": osmLayer,
+            "Satellite": satelliteLayer
+        };
+
+        L.control.layers(baseMaps).addTo(map);
+
+        var bounds = new L.LatLngBounds();
+
+        [res;block=begin]
+        var loc = L.latLng([res.latitudine], [res.longitudine]);
+        bounds.extend(loc);
+
+        var icon = L.icon({
+            iconUrl: getMarkerPath('[res.colore;strconv=js]', '[res.lettera;strconv=js]'),
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+
+        var marker = L.marker(loc, { icon: icon })
+            .addTo(map)
+            .bindPopup('<b>[res.risorsa;strconv=js]</b>');
+
+        markers['[res.tracker]'] = marker;
+        [res;block=end]
+
+        map.fitBounds(bounds);
+    }
+
+    $(document).ready(function() {
+        $("#filter1").keyup(function() {
+            var filter = $(this).val(),
+                count = 0;
+            $('#results1 div').each(function() {
+                if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                    count++;
+                }
+            });
+        });
+
+        $("#filter2").keyup(function() {
+            var filter = $(this).val(),
+                count = 0;
+            $('#results2 div').each(function() {
+                if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                    count++;
+                }
+            });
+        });
+    });
+
+    function zoomIn(index) {
+        var marker = markers[index];
+        if (marker) {
+            map.setView(marker.getLatLng(), 17); // Zoom su un marker specifico
+        }
+    }
+
+    document.getElementById('searchTextField').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            var query = document.getElementById('searchTextField').value;
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var lat = data[0].lat;
+                        var lon = data[0].lon;
+                        map.setView([lat, lon], 17); 
+                        document.getElementById('cityLat').value = lat;
+                        document.getElementById('cityLng').value = lon;
+                    }
+                });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initMap();
+    });
+</script>

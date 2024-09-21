@@ -19,9 +19,9 @@ $camilaWT = new CamilaWorkTable();
 $camilaWT->db = $_CAMILA['db'];
 
 $table = 'geotracker_geotracking';
-$mapping = 'tst=Data/Ora#tracker=Tracker#lat=Lat.#lon=Lon.#t=Ev.#id=Id#gmaps=Google Maps';
+$mapping = 'tst=Data/Ora#tracker=Tracker#lat=Lat.#lon=Lon.#t=Ev.#id=Id#gmaps=Google Maps#acc=Accuratezza (m)#batt=Batteria (%)';
 $title = 'Ultimi tracciamenti';
-$report_fields  = 't.tst,t.tracker,${tracker.risorsa} as Risorsa,t.t,'.$_CAMILA['db']->Concat('t.lat', "','", 't.lon').' as Coordinate, t.id as gmaps,t.id';
+$report_fields  = 't.tst,t.tracker,${tracker.risorsa} as Risorsa,t.t,'.$_CAMILA['db']->Concat('t.lat', "','", 't.lon').' as Coordinate, t.id as gmaps,t.id,t.acc,t.batt';
 $stmt = 'select ' . $report_fields . ' from ' . $table . ' t LEFT OUTER JOIN ${TRACKER} ON ${tracker.tracker}=t.tracker WHERE t.type=\'location\'';
 $stmt = $camilaWT->parseWorktableSqlStatement($stmt);
 $report = new report($stmt, $title, 'tst', 'desc', $mapping);

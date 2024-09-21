@@ -1,11 +1,65 @@
-<br/>
-
 <style>
-
 #map_canvas {
 	height: 400px;
 }
 </style>
+
+<script type="text/javascript">
+function writeMarkerIcon(color,letter) {
+	document.write('<img src="' + getMarkerPath(color,letter) + '" alt="marker">');
+}
+
+function getMarkerPath(color,letter) {	
+	var icon = 'plugins/geo-tracker/templates/images/it/marker_rosso.png';
+	if (!color) {
+	} else {
+		icon = 'plugins/geo-tracker/templates/images/it/marker_'+color+'.png';
+	}
+	if (!letter) {
+	} else {
+		icon = 'plugins/geo-tracker/templates/images/en/marker_'+traduciColore(color)+letter.toUpperCase()+'.png';
+	}
+	return icon;
+}
+
+function traduciColore(colore) {
+    let coloreInInglese;
+    
+    switch (colore.toLowerCase()) {
+        case 'rosso':
+            coloreInInglese = 'red';
+            break;
+        case 'nero':
+            coloreInInglese = 'black';
+            break;
+        case 'blu':
+            coloreInInglese = 'blue';
+            break;
+        case 'verde':
+            coloreInInglese = 'green';
+            break;
+        case 'grigio':
+            coloreInInglese = 'grey';
+            break;
+        case 'arancione':
+            coloreInInglese = 'orange';
+            break;
+        case 'viola':
+            coloreInInglese = 'purple';
+            break;
+        case 'bianco':
+            coloreInInglese = 'white';
+            break;
+        case 'giallo':
+            coloreInInglese = 'yellow';
+            break;
+        default:
+            coloreInInglese = 'red';
+    }
+    
+    return coloreInInglese;
+}
+</script>
 
 <div class="row">
 	<h3><span class="glyphicon glyphicon-map-marker"></span> MAPPA RISORSE E SERVIZI</h3>
@@ -17,33 +71,19 @@
 			<h4><span class="glyphicon glyphicon-map-marker"></span> RISORSE</h4>
 			<input id="filter1" type="text" placeholder="Cerca risorse...">
 			<div id="results1">
+
 			[res2;block=begin]
 				<div class="results">
-				<h4>
-					<a href="javascript:zoomIn('[res2.tracker]');"><span class="glyphicon glyphicon-map-marker"></span> [res2.risorsa]</a>
-				</h4>
-				<h5>
-					[[res2.lettera]] [res2.risorsa]
-				</h5>
-				<!--<div class="form-horizontal">
-					<div class="form-group">
-						<label class="control-label col-md-4">Volontari</label>
-						<div class="col-md-8 form-control-static">
-							
-						</div>
-						<label class="control-label col-md-4">Mezzi</label>
-						<div class="col-md-8 form-control-static">
-							
-						</div>
-					</div>
-				</div>-->
+					<h4>
+						<script type="text/javascript">writeMarkerIcon('[res2.colore;strconv=js]','[res2.lettera;strconv=js]');</script>
+						<a href="javascript:zoomIn('[res2.tracker]');">[res2.risorsa]</a>
+					</h4>
 				</div>
 				[res2;block=end] 
 			</div>
 			</div>
 		</div>
-		
-		
+
 		<div class="panel panel-default">
 			<div class="panel-body">
 			<h4><span class="glyphicon glyphicon-map-marker"></span> SERVIZI</h4>
@@ -51,24 +91,10 @@
 			<div id="results2">
 			[res3;block=begin]
 				<div class="results">
-				<h4>
-					<a href="javascript:zoomIn('[res3.tracker]');"><span class="glyphicon glyphicon-map-marker"></span> [res3.risorsa]</a>
-				</h4>
-				<h5>
-					[[res3.lettera]] [res3.risorsa]
-				</h5>
-				<!--<div class="form-horizontal">
-					<div class="form-group">
-						<label class="control-label col-md-4">Volontari</label>
-						<div class="col-md-8 form-control-static">
-							
-						</div>
-						<label class="control-label col-md-4">Mezzi</label>
-						<div class="col-md-8 form-control-static">
-							
-						</div>
-					</div>
-				</div>-->
+					<h4>
+						<script type="text/javascript">writeMarkerIcon('[res3.colore;strconv=js]','[res3.lettera;strconv=js]');</script>
+						<a href="javascript:zoomIn('[res3.tracker]');">[res3.risorsa]</a>
+					</h4>
 				</div>
 			[res3;block=end] 
 			</div>
@@ -93,7 +119,7 @@
 
 </div>
 
-<script>
+<script type="text/javascript">
 
 var clickOnPage = false;
 var markers = {};
@@ -144,44 +170,6 @@ function zoomIn(index) {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function traduciColore(colore) {
-    let coloreInInglese;
-    
-    switch (colore.toLowerCase()) {
-        case 'rosso':
-            coloreInInglese = 'red';
-            break;
-        case 'nero':
-            coloreInInglese = 'black';
-            break;
-        case 'blu':
-            coloreInInglese = 'blue';
-            break;
-        case 'verde':
-            coloreInInglese = 'green';
-            break;
-        case 'grigio':
-            coloreInInglese = 'grey';
-            break;
-        case 'arancione':
-            coloreInInglese = 'orange';
-            break;
-        case 'viola':
-            coloreInInglese = 'purple';
-            break;
-        case 'bianco':
-            coloreInInglese = 'white';
-            break;
-        case 'giallo':
-            coloreInInglese = 'yellow';
-            break;
-        default:
-            coloreInInglese = 'red';
-    }
-    
-    return coloreInInglese;
-}
-
 function initMap() {
 	var bounds = new google.maps.LatLngBounds();
 	map = new google.maps.Map(document.getElementById('map_canvas'), {
@@ -192,20 +180,8 @@ function initMap() {
 	[res;block=begin]
 	loc = new google.maps.LatLng([res.latitudine],[res.longitudine]);
 	bounds.extend(loc);
-	
-	var color = '[res.colore;strconv=js]';
-	var letter = '[res.lettera;strconv=js]';
-	
-	var icon = 'plugins/geo-tracker/templates/images/it/marker_rosso.png';
-	if (!color) {
-	} else {
-		icon = 'plugins/geo-tracker/templates/images/it/marker_'+color+'.png';
-	}
-	
-	if (!letter) {
-	} else {
-		icon = 'plugins/geo-tracker/templates/images/en/marker_'+traduciColore(color)+letter.toUpperCase()+'.png';
-	}
+
+	var icon = getMarkerPath('[res.colore;strconv=js]','[res.lettera;strconv=js]');
 
 	var marker = new google.maps.Marker({
 	  position: loc,
