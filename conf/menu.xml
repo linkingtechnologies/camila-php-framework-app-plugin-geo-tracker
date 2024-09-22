@@ -7,12 +7,22 @@
  </tab>
  <tab>
   <id>map</id>
-  <title>MAPPA</title>
-  <url>?dashboard=map</url>
+  <title>MAPPA (OSM)</title>
+  <url>?dashboard=omap</url>
+ </tab>
+ <tab>
+  <id>map</id>
+  <title>MAPPA (Google)</title>
+  <url>?dashboard=gmap</url>
  </tab>
  <tab>
   <id>last_tracking</id>
-  <title>ULTIMI TRACCIAMENTI</title>
+  <title>TRACCIAMENTI</title>
   <url>?dashboard=last_tracking</url>
+ </tab>
+  <tab>
+  <id>last_position</id>
+  <title>DISPOSITIVI</title>
+  <url>?dashboard=last_position</url>
  </tab>
 </menu>

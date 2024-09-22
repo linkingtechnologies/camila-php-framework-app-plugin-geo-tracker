@@ -21,16 +21,28 @@ $camilaWT->db = $_CAMILA['db'];
 $table = 'geotracker_geotracking';
 $mapping = 'tst=Data/Ora#tracker=Tracker#lat=Lat.#lon=Lon.#t=Ev.#id=Id#gmaps=Google Maps#acc=Accuratezza (m)#batt=Batteria (%)';
 $title = 'Ultimi tracciamenti';
-$report_fields  = 't.tst,t.tracker,${tracker.risorsa} as Risorsa,t.t,'.$_CAMILA['db']->Concat('t.lat', "','", 't.lon').' as Coordinate, t.id as gmaps,t.id,t.acc,t.batt';
+$report_fields  = 't.tst,t.tracker,${tracker.risorsa} as Risorsa,NULL as pairing, t.t,'.$_CAMILA['db']->Concat('t.lat', "','", 't.lon').' as Coordinate, t.id as gmaps,t.id,t.acc,t.batt';
 $stmt = 'select ' . $report_fields . ' from ' . $table . ' t LEFT OUTER JOIN ${TRACKER} ON ${tracker.tracker}=t.tracker WHERE t.type=\'location\'';
 $stmt = $camilaWT->parseWorktableSqlStatement($stmt);
 $report = new report($stmt, $title, 'tst', 'desc', $mapping);
 $funzioniCustom = [
     'gmaps' => function($row, $val, $record) {
-		$tracker = $row->column[4]->text;
+		$tracker = $row->column[5]->text;
 		$link = "https://www.google.com/maps?q={$tracker}";
 		$l = new CHAW_link('Google Maps', $link);
         $row->add_column($l);
+    },
+	'pairing' => function($row, $val, $record) {
+		$resource = $row->column[2]->text;
+		if ($resource != '') {
+			$l = new CHAW_text('');
+			$row->add_column($l);
+		} else {
+			$tracker = $row->column[1]->text;
+			$link = "?dashboard=new_pairing&tracker=".urlencode($tracker);
+			$l = new CHAW_link('Abbina', $link);
+			$row->add_column($l);
+		}
     }
 ];
 $report->customFunctions = $funzioniCustom;
@@ -46,9 +58,5 @@ $report->candelete = false;
 $report->process();
 $report->draw();*/
 
-
-
-
 $_CAMILA['page']->camila_export_enabled = true;
-
 ?>

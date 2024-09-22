@@ -1,69 +1,57 @@
 <?php
-/*  This File is part of Camila PHP Framework
-    Copyright (C) 2006-2024 Umberto Bresciani
-
-    Camila PHP Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Camila PHP Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Camila PHP Framework. If not, see <http://www.gnu.org/licenses/>. */
-
-$camilaWT = new CamilaWorkTable();
+$camilaWT  = new CamilaWorkTable();
 $camilaWT->db = $_CAMILA['db'];
 
-$mapping = 'tst=Data/Ora#tracker=Tracker#lat=Lat.#lon=Lon.#t=Ev.#id=Id#view_all=Tracciamento#last2=Tracciamento#last4=Tracciamento#last8=Tracciamento#gmaps=Mappa Google';
-$title = 'Ultimo tracciamento per dispositivo';
+$lang = CAMILA_LANG;
+$camilaTemplate = new CamilaTemplate($lang);
+$params = $camilaTemplate->getParameters();
 
-$stmt = 'SELECT DISTINCT g.tracker, ${tracker.risorsa} as Risorsa,g.tracker AS last2, g.tracker AS last4, g.tracker AS last8, g.tracker AS view_all,'.$_CAMILA['db']->Concat('g.lat', "','", 'g.lon').' as Coordinate, g.tst, g.tst AS gmaps FROM geotracker_geotracking g JOIN ( SELECT tracker, MAX(tst) AS max_tst FROM geotracker_geotracking GROUP BY tracker ) latest ON g.tracker = latest.tracker AND g.tst = latest.max_tst LEFT OUTER JOIN ${TRACKER} ON ${tracker.tracker}=g.tracker WHERE g.type=\'location\'';
-$stmt = $camilaWT->parseWorktableSqlStatement($stmt);
-$report = new report($stmt, $title, 'tst', 'desc',$mapping);
-$report->canupdate = false;
-$report->candelete = false;
+$tSheet = $camilaWT->getWorktableSheetId('TRACKER');
+$sSheet = $camilaWT->getWorktableSheetId('SERVIZI');
 
-$funzioniCustom = [
-    'view_all' => function($row, $val, $record) {
-		$tracker = $row->column[0]->text;
-		$link = "index.php?dashboard=map_path&tracker=".urlencode($tracker);
-		$l = new CHAW_link('Complessivo', $link);
-        $row->add_column($l);
-    },
-	'last2' => function($row, $val, $record) {
-		$tracker = $row->column[0]->text;
-		$link = "index.php?dashboard=map_path&tracker=".urlencode($tracker).'&h=2';
-		$l = new CHAW_link('Ultime 2 ore', $link);
-        $row->add_column($l);
-    },
-	'last4' => function($row, $val, $record) {
-		$tracker = $row->column[0]->text;
-		$link = "index.php?dashboard=map_path&tracker=".urlencode($tracker).'&h=4';
-		$l = new CHAW_link('Ultime 4 ore', $link);
-        $row->add_column($l);
-    },
-	'last8' => function($row, $val, $record) {
-		$tracker = $row->column[0]->text;
-		$link = "index.php?dashboard=map_path&tracker=".urlencode($tracker).'&h=8';
-		$l = new CHAW_link('Ultime 8 ore', $link);
-        $row->add_column($l);
-    },
-	'gmaps' => function($row, $val, $record) {
-		$tracker = $row->column[6]->text;
-		$link = "https://www.google.com/maps?q={$tracker}";
-		$l = new CHAW_link('Google Maps', $link);
-        $row->add_column($l);
-    }
-];
-$report->customFunctions = $funzioniCustom;
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '<div class="row">'));	
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '<div class="col-xs-12 col-md-4">'));
+$camilaUI->insertTitle('Tracciamenti', 'globe');
+$camilaUI->insertButton('?dashboard=gmap', 'Google Maps', 'map-marker');
+$camilaUI->insertButton('?dashboard=omap', 'OpenStreetMap', 'map-marker');
+$camilaUI->insertButton('?dashboard=last_position', 'Ultime posizioni rilevate per dispositivo', 'screenshot');
+$camilaUI->insertButton('?dashboard=last_position', 'Elenco tracciamenti', 'list');
 
-$report->process();
-$report->draw();
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '</div>'));
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '<div class="col-xs-12 col-md-4">'));
+$camilaUI->insertTitle('Dispositivi', 'phone');
+$camilaUI->insertButton('?dashboard=last_tracking', 'Abbina dispositivo', 'plus');
+$camilaUI->insertButton('cf_worktable'.$tSheet.'.php', 'Elenco tracker/risorse', 'phone');
+$camilaUI->insertButton('cf_worktable'.$sSheet.'.php', 'Elenco servizi', 'list');
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '</div>'));
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '<div class="col-xs-12 col-md-4">'));
+$camilaUI->insertTitle('Configurazione', 'wrench');
+$camilaUI->insertButton('?dashboard=configuration', 'Impostazioni', 'list');
+$camilaUI->insertDivider();
+if (isset($params['URL_base_server']) && $params['URL_base_server'] != '') {
+	$url = $params['URL_base_server'] . '/app/geotracker/plugins/geo-tracker/track.php';
+    $letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$payload = json_encode([
+		"_type" => "configuration",
+		"mode" => 3,
+		"deviceId" => $letters[rand(0, strlen($letters) - 1)] . $letters[rand(0, strlen($letters) - 1)],
+		"monitoring" => 1,
+		"url" => $url
+	]);
+	$camilaUI->insertImage('../../lib/qrcode/image.php?msg='.urlencode('owntracks:///config?inline='.urlencode(base64_encode($payload))));
+	$camilaUI->insertDivider();
+} else {
+	$camilaUI->insertWarning('URL Server non configurato!');
+}
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '</div>'));
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '</div>'));
 
-$_CAMILA['page']->camila_export_enabled = true;
-
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '<div class="row">'));
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '<div class="col-xs-12">'));
+if (isset($params['URL_base_server']) && $params['URL_base_server'] != '') {
+	$url = 'URL tracciamento: ' . $params['URL_base_server'] . '/app/geotracker/plugins/geo-tracker/track.php';
+	$camilaUI->insertText($url);
+}
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '</div>'));
+$_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, '</div>'));
 ?>

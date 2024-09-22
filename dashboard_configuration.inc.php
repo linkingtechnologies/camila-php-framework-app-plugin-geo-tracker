@@ -11,33 +11,10 @@ $form->drawrules = true;
 $form->preservecontext = true;
 
 foreach ($params as $key => $val) {
-	if ($key == 'logo' || $key == 'logo2' || $key == 'chiave_mappa_google') {
-	}
-	else
-	{
-		new form_textbox($form, $key, $key, false, 50, 200);
-		$form->fields[$key]->set_css_class('form-control');
-		$form->fields[$key]->value = $val;
-	}
-	
-}
-
-reset($params);
-
-foreach ($params as $key => $val) {
-	if ($key == 'logo' || $key == 'logo2') {
-		new form_fm_file_listbox($form, $key, $key, CAMILA_TMPL_DIR . '/images/' . $lang . '/');
-		$form->fields[$key]->set_br(2);
-		$form->fields[$key]->set_css_class('form-control');
-		$form->fields[$key]->value = $val;
-	}
-	
-	if ($key == 'chiave_mappa_google') {
-		new form_textbox($form, $key, ucfirst(str_replace("_"," ",$key)), false, 50, 100);
-		$form->fields[$key]->set_br(2);
-		$form->fields[$key]->set_css_class('form-control');
-		$form->fields[$key]->value = $val;
-	}
+	new form_textbox($form, $key, ucfirst(str_replace("_"," ",$key)), false, 50, 100);
+	$form->fields[$key]->set_br(2);
+	$form->fields[$key]->set_css_class('form-control');
+	$form->fields[$key]->value = $val;
 }
 
 if ($form->process())
